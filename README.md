@@ -4,9 +4,7 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 
 <details>
 <summary>
-
-## Урок 1. Сравнение RDBMS и NoSQL. Экосистема Hadoop. Файловая система HDFS
-
+  Урок 1. Сравнение RDBMS и NoSQL. Экосистема Hadoop. Файловая система HDFS
 </summary>
 
 1. Опробовать консольные утилиты для работы с кластером
