@@ -11,95 +11,95 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 
 - Создать/скопировать/удалить папку
 
-  Создание `hdfs dfs -mkdir /student3_7`.
+Создание `hdfs dfs -mkdir /student3_7`.
 
-  Копирование `hdfs dfs -cp /student3_7 /student3_7_copy`.
+Копирование `hdfs dfs -cp /student3_7 /student3_7_copy`.
 
-  Удаление `hdfs dfs -rm -R /student3_7_copy`.
+Удаление `hdfs dfs -rm -R /student3_7_copy`.
 
-  Без флага `-R` удаляется только файл. После каждой команды проверял результат командой `hdfs dfs -ls /`.
+Без флага `-R` удаляется только файл. После каждой команды проверял результат командой `hdfs dfs -ls /`.
 
 - Положить в HDFS любой файл
 
-  `hdfs dfs -copyFromLocal /home/student3_7/.bashrc /student3_7/`
+`hdfs dfs -copyFromLocal /home/student3_7/.bashrc /student3_7/`
 
-  Первый аргумент - что копируем, второй - куда копируем. Проверяется командой `hdfs dfs -ls /student3_7`. Результат:
+Первый аргумент - что копируем, второй - куда копируем. Проверяется командой `hdfs dfs -ls /student3_7`. Результат:
 
-  ```
-  Found 1 items
-  -rw-r--r--   3 student3_7 supergroup        231 2020-03-18 23:55 /student3_7/.bashrc
-  ```
+```
+Found 1 items
+-rw-r--r--   3 student3_7 supergroup        231 2020-03-18 23:55 /student3_7/.bashrc
+```
 
 - Скопировать/удалить этот файл
 
-  `hdfs dfs -get /student3_7/.bashrc /tmp` или `hdfs dfs -copyToLocal /student3_7/.bashrc /tmp`.
+`hdfs dfs -get /student3_7/.bashrc /tmp` или `hdfs dfs -copyToLocal /student3_7/.bashrc /tmp`.
 
-  Порядок аргументов такой же. Сперва откуда, потом куда. Проверяем командой `ls -la /tmp`. Сразу удалим этот файл с рабочей станции: `rm /tmp/.bashrc`.
+Порядок аргументов такой же. Сперва откуда, потом куда. Проверяем командой `ls -la /tmp`. Сразу удалим этот файл с рабочей станции: `rm /tmp/.bashrc`.
 
-  Скопируем файл: `hdfs dfs -cp /student3_7/.bashrc /student3_7/.bashrc_copy`. Удалим дубликат: `hdfs dfs -rm /student3_7/.bashrc_copy`.
+Скопируем файл: `hdfs dfs -cp /student3_7/.bashrc /student3_7/.bashrc_copy`. Удалим дубликат: `hdfs dfs -rm /student3_7/.bashrc_copy`.
 
 - Просмотреть размер любой папки
 
-  Сперва узнаем сколько весит файл .bashrc на рабочей станции, чтобы убедиться в правильности команды на сервере:
+Сперва узнаем сколько весит файл .bashrc на рабочей станции, чтобы убедиться в правильности команды на сервере:
 
-  ```
-  [student3_7@manager /]$ du -h /home/student3_7/.bashrc
-  4,0K    /home/student3_7/.bashrc
-  ```
+```
+[student3_7@manager /]$ du -h /home/student3_7/.bashrc
+4,0K    /home/student3_7/.bashrc
+```
 
-  На сервере: `hdfs dfs -du /student3_7/`. Результат:
+На сервере: `hdfs dfs -du /student3_7/`. Результат:
 
-  ```
-  231  693  /student3_7/.bashrc
-  ```
+```
+231  693  /student3_7/.bashrc
+```
 
-  То есть на сервере этот файл весит 231 байт??? Эта же цифра выводится в команде `hdfs dfs -ls /student3_7/`, но не показывается суммарный объём занимаемой памяти.
+То есть на сервере этот файл весит 231 байт??? Эта же цифра выводится в команде `hdfs dfs -ls /student3_7/`, но не показывается суммарный объём занимаемой памяти.
 
 - Посмотреть как файл хранится на файловой системе (см. команду fsck)
 
-  Команда `hdfs fsck /student3_7/`. Результат:
+Команда `hdfs fsck /student3_7/`. Результат:
 
-  ```
-  Total size:    231 B
-  Total dirs:    1
-  Total files:   1
-  Total symlinks:                0
-  Total blocks (validated):      1 (avg. block size 231 B)
-  Minimally replicated blocks:   1 (100.0 %)
-  Over-replicated blocks:        0 (0.0 %)
-  Under-replicated blocks:       0 (0.0 %)
-  Mis-replicated blocks:         0 (0.0 %)
-  Default replication factor:    3
-  Average block replication:     3.0
-  Corrupt blocks:                0
-  Missing replicas:              0 (0.0 %)
-  Number of data-nodes:          3
-  Number of racks:               1
-  ```
+```
+Total size:    231 B
+Total dirs:    1
+Total files:   1
+Total symlinks:                0
+Total blocks (validated):      1 (avg. block size 231 B)
+Minimally replicated blocks:   1 (100.0 %)
+Over-replicated blocks:        0 (0.0 %)
+Under-replicated blocks:       0 (0.0 %)
+Mis-replicated blocks:         0 (0.0 %)
+Default replication factor:    3
+Average block replication:     3.0
+Corrupt blocks:                0
+Missing replicas:              0 (0.0 %)
+Number of data-nodes:          3
+Number of racks:               1
+```
 
 - Установить нестандартный фактор репликации (см. команду setrep)
 
-  ```
-  [student3_7@manager /]$ hdfs dfs -setrep 2 /student3_7/
-  Replication 2 set: /student3_7/.bashrc
-  ```
+```
+[student3_7@manager /]$ hdfs dfs -setrep 2 /student3_7/
+Replication 2 set: /student3_7/.bashrc
+```
 
-  Сделаем копию файла ещё раз: `hdfs dfs -cp /student3_7/.bashrc /student3_7/.bashrc_copy`. Проверим содержимое папки:
+Сделаем копию файла ещё раз: `hdfs dfs -cp /student3_7/.bashrc /student3_7/.bashrc_copy`. Проверим содержимое папки:
 
-  ```
-  [student3_7@manager /]$ hdfs dfs -du -h /student3_7/
-  231  462  /student3_7/.bashrc
-  231  693  /student3_7/.bashrc_copy
-  ```
+```
+[student3_7@manager /]$ hdfs dfs -du -h /student3_7/
+231  462  /student3_7/.bashrc
+231  693  /student3_7/.bashrc_copy
+```
 
-  То есть нестандартный фактор репликации применился к существующим файлам. Но к новым файлам в этой папке применяется дефолтный фактор репликации.
+То есть нестандартный фактор репликации применился к существующим файлам. Но к новым файлам в этой папке применяется дефолтный фактор репликации.
 
-  Перед уходом удалим всё лишнее:
+Перед уходом удалим всё лишнее:
 
-  ```
-  hdfs dfs -rm /student3_7/.bashrc_copy
-  hdfs dfs -rm /student3_7/.bashrc
-  ```
+```
+hdfs dfs -rm /student3_7/.bashrc_copy
+hdfs dfs -rm /student3_7/.bashrc
+```
 
 2. Опробовать rest-доступ для работы с кластером, используя утилиту CURL.
 
