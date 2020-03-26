@@ -133,4 +133,14 @@ hdfs dfs -rm /student3_7/.bashrc
 
 **4. [Для любителей программирования] Достучаться до файловой системы используя python и библиотеку libhdfs3**
 
+Возникли проблемы с установкой библиотеки `libhdfs3`, но всё-таки успел поставить и выполнить следующий код:
+
+```
+from hdfs3 import HDFileSystem
+hdfs=HDFileSystem(host='manager.novalocal',port=8020)
+
+
+hdfs.ls('/user/instructor')
+```
+
 </details>
