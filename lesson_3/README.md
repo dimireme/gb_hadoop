@@ -313,4 +313,232 @@ INFO  : OK
 
 **7. [Продвинутый вариант] Сделать все вышеперечисленное с использованием JSON SerDe. Подсказка: см в сторону команды «ADD JAR».**
 
-Не сделано
+Загрузить данные в таблицы по технике `create table as ...` не получилось. `insert into tbl select ...` тоже не помогло. Вычитал что в json-таблицу невозможно записать данные с помощью DML операций невозможно. Поэтому данные опять заливал в HDFS через HUE. Файл с данными в ручную урезал до нескольких десятков строк и привёл к нужному формату.
+
+Ещё заметил что при создании таблицы типы столбцов получаются такими, как и указано. Поэтому тип `date` был приведён к `string`, иначе была ошибка при запросе данных.
+
+```
+drop table student3_7_les3.state_json;
+create external table student3_7_les3.state_json
+(
+    id int,
+    state string
+)
+ROW FORMAT SERDE
+    'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE
+LOCATION
+    '/user/student3_7/datasets/state_json';
+select * from student3_7_les3.state_json;
+
+
+drop table student3_7_les3.measure_json;
+create external table student3_7_les3.measure_json
+(
+    id int,
+    measure string
+)
+ROW FORMAT SERDE
+    'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE
+LOCATION
+    '/user/student3_7/datasets/measure_json';
+select * from student3_7_les3.measure_json;
+
+
+drop table student3_7_les3.border_crossing_json;
+create external table student3_7_les3.border_crossing_json
+(
+    port_name string,
+    state int,
+    port_code int,
+    border string,
+    `date` string,
+    measure int,
+    value int,
+    `location` string
+)
+ROW FORMAT SERDE
+    'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE
+LOCATION
+    '/user/student3_7/datasets/border_crossing_json';
+select * from student3_7_les3.border_crossing_json;
+```
+
+Далее те же самые запросы с агрегатными функцииями и JOIN:
+
+```
+select count(*) as `count`, measure, sum(value) as sum_value
+from student3_7_les3.border_crossing_json
+group by measure;
+```
+
+Сперва запрос падал с ошибкой, но после добавления `hive-hcatalog-core.jar` всё заработало:
+
+```
+ADD JAR /opt/cloudera/parcels/CDH-5.16.2-1.cdh5.16.2.p0.8/lib/hive-hcatalog/share/hcatalog/hive-hcatalog-core.jar;
+```
+
+<details>
+  <summary>Лог выполнения в HUE</summary>
+
+```
+INFO  : Compiling command(queryId=hive_20200416214242_42e410b9-5d2b-45d6-b34f-886a2d40b95f): select count(*) as `count`, measure, sum(value) as sum_value
+from student3_7_les3.border_crossing_json
+group by measure
+INFO  : Semantic Analysis Completed
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:count, type:bigint, comment:null), FieldSchema(name:measure, type:int, comment:null), FieldSchema(name:sum_value, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20200416214242_42e410b9-5d2b-45d6-b34f-886a2d40b95f); Time taken: 0.076 seconds
+INFO  : Executing command(queryId=hive_20200416214242_42e410b9-5d2b-45d6-b34f-886a2d40b95f): select count(*) as `count`, measure, sum(value) as sum_value
+from student3_7_les3.border_crossing_json
+group by measure
+INFO  : Query ID = hive_20200416214242_42e410b9-5d2b-45d6-b34f-886a2d40b95f
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1583843553969_0455
+INFO  : The url to track the job: http://manager.novalocal:8088/proxy/application_1583843553969_0455/
+INFO  : Starting Job = job_1583843553969_0455, Tracking URL = http://manager.novalocal:8088/proxy/application_1583843553969_0455/
+INFO  : Kill Command = /opt/cloudera/parcels/CDH-5.16.2-1.cdh5.16.2.p0.8/lib/hadoop/bin/hadoop job  -kill job_1583843553969_0455
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2020-04-16 21:42:20,133 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2020-04-16 21:42:25,325 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.33 sec
+INFO  : 2020-04-16 21:42:30,500 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.64 sec
+INFO  : MapReduce Total cumulative CPU time: 4 seconds 640 msec
+INFO  : Ended Job = job_1583843553969_0455
+INFO  : MapReduce Jobs Launched:
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.64 sec   HDFS Read: 21438 HDFS Write: 117 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 4 seconds 640 msec
+INFO  : Completed executing command(queryId=hive_20200416214242_42e410b9-5d2b-45d6-b34f-886a2d40b95f); Time taken: 19.843 seconds
+INFO  : OK
+```
+
+</details>
+
+Результат выгрузки:
+
+| count | measure | sum_value |
+| ----- | ------- | --------- |
+| 10    | 1       | 195874    |
+| 2     | 2       | 23307     |
+| 6     | 3       | 357       |
+| 5     | 4       | 324978    |
+| 4     | 5       | 9510      |
+| 7     | 6       | 6222      |
+| 1     | 7       | 6685      |
+| 14    | 8       | 732166    |
+| 4     | 9       | 95        |
+| 10    | 10      | 45533     |
+| 6     | 11      | 9429      |
+| 1     | 12      | 30        |
+
+```
+select m.measure, bc.mes_count, bc.val_sum
+from (
+	select count(*) as `mes_count`, measure, sum(value) as `val_sum`
+	from student3_7_les3.border_crossing_json bc
+	group by measure
+) bc
+left join student3_7_les3.measure_json m
+on bc.measure = m.id;
+```
+
+<details>
+  <summary>Лог выполнения в HUE</summary>
+
+```
+INFO  : Compiling command(queryId=hive_20200416214848_5a1885a2-e82b-4c3f-a8b9-733ac146dc31): select m.measure, bc.mes_count, bc.val_sum
+from (
+	select count(*) as `mes_count`, measure, sum(value) as `val_sum`
+	from student3_7_les3.border_crossing_json bc
+	group by measure
+) bc
+left join student3_7_les3.measure_json m
+on bc.measure = m.id
+INFO  : Semantic Analysis Completed
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:m.measure, type:string, comment:null), FieldSchema(name:bc.mes_count, type:bigint, comment:null), FieldSchema(name:bc.val_sum, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20200416214848_5a1885a2-e82b-4c3f-a8b9-733ac146dc31); Time taken: 0.114 seconds
+INFO  : Executing command(queryId=hive_20200416214848_5a1885a2-e82b-4c3f-a8b9-733ac146dc31): select m.measure, bc.mes_count, bc.val_sum
+from (
+	select count(*) as `mes_count`, measure, sum(value) as `val_sum`
+	from student3_7_les3.border_crossing_json bc
+	group by measure
+) bc
+left join student3_7_les3.measure_json m
+on bc.measure = m.id
+INFO  : Query ID = hive_20200416214848_5a1885a2-e82b-4c3f-a8b9-733ac146dc31
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1583843553969_0457
+INFO  : The url to track the job: http://manager.novalocal:8088/proxy/application_1583843553969_0457/
+INFO  : Starting Job = job_1583843553969_0457, Tracking URL = http://manager.novalocal:8088/proxy/application_1583843553969_0457/
+INFO  : Kill Command = /opt/cloudera/parcels/CDH-5.16.2-1.cdh5.16.2.p0.8/lib/hadoop/bin/hadoop job  -kill job_1583843553969_0457
+INFO  : Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+INFO  : 2020-04-16 21:48:35,195 Stage-1 map = 0%,  reduce = 0%
+INFO  : 2020-04-16 21:48:41,408 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.16 sec
+INFO  : 2020-04-16 21:48:46,596 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.28 sec
+INFO  : MapReduce Total cumulative CPU time: 4 seconds 280 msec
+INFO  : Ended Job = job_1583843553969_0457
+INFO  : Starting task [Stage-5:MAPREDLOCAL] in serial mode
+2020-04-16 09:48:50	Dump the side-table for tag: 1 with group count: 12 into file: file:/tmp/hive/16996079-ba10-4207-83e4-73c7b22069f1/hive_2020-04-16_21-48-28_637_961062712049068459-199/-local-10004/HashTable-Stage-4/MapJoin-mapfile491--.hashtable
+2020-04-16 09:48:50	Uploaded 1 File to: file:/tmp/hive/16996079-ba10-4207-83e4-73c7b22069f1/hive_2020-04-16_21-48-28_637_961062712049068459-199/-local-10004/HashTable-Stage-4/MapJoin-mapfile491--.hashtable (689 bytes)
+2020-04-16 09:48:50	End of local task; Time Taken: 0.931 sec.
+INFO  : Execution completed successfully
+INFO  : MapredLocal task succeeded
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-4:MAPRED] in serial mode
+INFO  : Number of reduce tasks is set to 0 since there's no reduce operator
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_1583843553969_0458
+INFO  : The url to track the job: http://manager.novalocal:8088/proxy/application_1583843553969_0458/
+INFO  : Starting Job = job_1583843553969_0458, Tracking URL = http://manager.novalocal:8088/proxy/application_1583843553969_0458/
+INFO  : Kill Command = /opt/cloudera/parcels/CDH-5.16.2-1.cdh5.16.2.p0.8/lib/hadoop/bin/hadoop job  -kill job_1583843553969_0458
+INFO  : Hadoop job information for Stage-4: number of mappers: 1; number of reducers: 0
+INFO  : 2020-04-16 21:48:57,812 Stage-4 map = 0%,  reduce = 0%
+INFO  : 2020-04-16 21:49:05,039 Stage-4 map = 100%,  reduce = 0%, Cumulative CPU 2.7 sec
+INFO  : MapReduce Total cumulative CPU time: 2 seconds 700 msec
+INFO  : Ended Job = job_1583843553969_0458
+INFO  : MapReduce Jobs Launched:
+INFO  : Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.28 sec   HDFS Read: 20448 HDFS Write: 359 SUCCESS
+INFO  : Stage-Stage-4: Map: 1   Cumulative CPU: 2.7 sec   HDFS Read: 5976 HDFS Write: 288 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 6 seconds 980 msec
+INFO  : Completed executing command(queryId=hive_20200416214848_5a1885a2-e82b-4c3f-a8b9-733ac146dc31); Time taken: 38.024 seconds
+INFO  : OK
+```
+
+  </details>
+
+Результат выгрузки:
+
+| m.measure                   | bc.mes_count | bc.val_sum |
+| --------------------------- | ------------ | ---------- |
+| Trucks                      | 10           | 195874     |
+| Rail Containers Full        | 2            | 23307      |
+| Trains                      | 6            | 357        |
+| Personal Vehicle Passengers | 5            | 324978     |
+| Bus Passengers              | 4            | 9510       |
+| Truck Containers Empty      | 7            | 6222       |
+| Rail Containers Empty       | 1            | 6685       |
+| Personal Vehicles           | 14           | 732166     |
+| Buses                       | 4            | 95         |
+| Truck Containers Full       | 10           | 45533      |
+| Pedestrians                 | 6            | 9429       |
+| Train Passengers            | 1            | 30         |
