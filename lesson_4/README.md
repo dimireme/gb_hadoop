@@ -233,7 +233,7 @@ select * from work limit 10;
 ```
 set parquet.compression=SNAPPY;
 
-CREATE EXTERNAL TABLE paragraph (
+CREATE EXTERNAL TABLE student3_7_les4.paragraph (
     workid STRING,
     paragraphid INT,
     paragraphnum INT,
@@ -369,7 +369,17 @@ Note: Recompile with -Xlint:deprecation for details.
 
 </details>
 
-То же самое, но таблица создаётся автоматически и данные помещаются в папку `/user/hive/warehouse/student3_7_les4.db/paragraph_2/`.
+<details>
+
+<summary>То же самое, но короче</summary>
+
+```
+[student3_7@manager ~]$ sqoop import --connect jdbc:postgresql://node3.novalocal/pg_db --username exporter -P --table paragraph --hive-import --hive-database student3_7_les4 --hive-table paragraph_2 --as-parquetfile
+```
+
+Создаётся таблица `student3_7_les4.paragraph_2`, но данные автоматически помещаются в папку `/user/hive/warehouse/student3_7_les4.db/paragraph_2/`. То есть заранее создавать таблицу было не обязательно. При этом файлы сжаты драйвером `SNAPPY`, хотя в консольной команде флаг `--compress` не использовался. Почему так - не понятно.
+
+</details>
 
 Посмотрим на созданные файлы:
 
@@ -441,33 +451,226 @@ select * from student3_7_les4.paragraph limit 1;
 
 Импортируем таблицу `sales_large` в формате ORC, так как у этого формата наилучшее сжатие.
 
-`sales_large`
+```
+CREATE EXTERNAL TABLE student3_7_les4.sales_large (
+    region STRING,
+    country STRING,
+    itemtype STRING,
+    saleschannel STRING,
+    orderpriority STRING,
+    orderdate STRING,
+    orderid INT,
+    shipdate STRING,
+    unitssold INT,
+    unitprice INT,
+    unitcost INT,
+    totalrevenue INT,
+    totalcost INT,
+    totalprofit INT
+) STORED AS ORC
+LOCATION '/user/student3_7/shakespeare/sales_large'
+TBLPROPERTIES ('orc.compress'='SNAPPY');
+```
 
 ```
-region,text
-country,text
-itemtype,text
-saleschannel,text
-orderpriority,text
-orderdate,text
-orderid,integer
-shipdate,text
-unitssold,numeric
-unitprice,numeric
-unitcost,numeric
-totalrevenue,numeric
-totalcost,numeric
-totalprofit,numeric
+[student3_7@manager ~]$ sqoop import --connect jdbc:postgresql://node3.novalocal/pg_db --username exporter -P --table sales_large --split-by orderid  --hcatalog-database student3_7_les4 --hcatalog-table sales_large --hcatalog-storage-stanza 'stored as orc tblproperties ("orc.compress"="SNAPPY")'
 ```
+
+<details>
+<summary>Лог выполнения (без ворнингов и инфо)</summary>
+
+```
+Warning: /opt/cloudera/parcels/CDH-5.16.2-1.cdh5.16.2.p0.8/bin/../lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+20/04/18 16:05:16 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6-cdh5.16.2
+Enter password:
+20/04/18 16:05:23 INFO manager.SqlManager: Using default fetchSize of 1000
+20/04/18 16:05:23 INFO tool.CodeGenTool: Beginning code generation
+20/04/18 16:05:23 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM "sales_large" AS t LIMIT 1
+20/04/18 16:05:23 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce
+Note: /tmp/sqoop-student3_7/compile/e0eed75e3666903d7dff895405ccaf25/sales_large.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+20/04/18 16:05:25 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-student3_7/compile/e0eed75e3666903d7dff895405ccaf25/sales_large.jar
+20/04/18 16:05:25 WARN manager.PostgresqlManager: It looks like you are importing from postgresql.
+20/04/18 16:05:25 WARN manager.PostgresqlManager: This transfer can be faster! Use the --direct
+20/04/18 16:05:25 WARN manager.PostgresqlManager: option to exercise a postgresql-specific fast path.
+20/04/18 16:05:25 INFO mapreduce.ImportJobBase: Beginning import of sales_large
+20/04/18 16:05:25 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+20/04/18 16:05:25 INFO hcat.SqoopHCatUtilities: Configuring HCatalog for import job
+20/04/18 16:05:25 INFO hcat.SqoopHCatUtilities: Configuring HCatalog specific details for job
+20/04/18 16:05:25 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM "sales_large" AS t LIMIT 1
+20/04/18 16:05:25 INFO hcat.SqoopHCatUtilities: Database column names projected : [region, country, itemtype, saleschannel, orderpriority, orderdate, orderid, shipdate, unitssold, unitprice, unitcost, totalrevenue, totalcost, totalprofit]
+20/04/18 16:05:25 INFO hcat.SqoopHCatUtilities: Database column name - info map :
+        country : [Type : 12,Precision : 2147483647,Scale : 0]
+        unitcost : [Type : 2,Precision : 0,Scale : 0]
+        orderid : [Type : 4,Precision : 10,Scale : 0]
+        orderdate : [Type : 12,Precision : 2147483647,Scale : 0]
+        unitprice : [Type : 2,Precision : 0,Scale : 0]
+        orderpriority : [Type : 12,Precision : 2147483647,Scale : 0]
+        totalcost : [Type : 2,Precision : 0,Scale : 0]
+        totalprofit : [Type : 2,Precision : 0,Scale : 0]
+        unitssold : [Type : 2,Precision : 0,Scale : 0]
+        totalrevenue : [Type : 2,Precision : 0,Scale : 0]
+        itemtype : [Type : 12,Precision : 2147483647,Scale : 0]
+        saleschannel : [Type : 12,Precision : 2147483647,Scale : 0]
+        region : [Type : 12,Precision : 2147483647,Scale : 0]
+        shipdate : [Type : 12,Precision : 2147483647,Scale : 0]
+
+...
+
+20/04/18 16:05:50 INFO db.DataDrivenDBInputFormat: BoundingValsQuery: SELECT MIN("orderid"), MAX("orderid") FROM "sales_large"
+20/04/18 16:05:55 INFO db.IntegerSplitter: Split size: 224999678; Num splits: 4 from: 100001180 to: 999999892
+20/04/18 16:05:55 INFO mapreduce.JobSubmitter: number of splits:4
+20/04/18 16:05:56 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1583843553969_0499
+20/04/18 16:05:56 INFO impl.YarnClientImpl: Submitted application application_1583843553969_0499
+20/04/18 16:05:56 INFO mapreduce.Job: The url to track the job: http://manager.novalocal:8088/proxy/application_1583843553969_0499/
+20/04/18 16:05:56 INFO mapreduce.Job: Running job: job_1583843553969_0499
+20/04/18 16:06:07 INFO mapreduce.Job: Job job_1583843553969_0499 running in uber mode : false
+20/04/18 16:06:07 INFO mapreduce.Job: map 0% reduce 0%
+20/04/18 16:07:09 INFO mapreduce.Job: map 25% reduce 0%
+20/04/18 16:07:16 INFO mapreduce.Job: map 50% reduce 0%
+20/04/18 16:07:31 INFO hive.metastore: Closed a connection to metastore, current connections: 0
+20/04/18 16:08:03 INFO mapreduce.Job: map 75% reduce 0%
+20/04/18 16:08:11 INFO mapreduce.Job: map 100% reduce 0%
+20/04/18 16:08:12 INFO mapreduce.Job: Job job_1583843553969_0499 completed successfully
+20/04/18 16:08:12 INFO mapreduce.Job: Counters: 30
+File System Counters
+FILE: Number of bytes read=0
+FILE: Number of bytes written=1397452
+FILE: Number of read operations=0
+FILE: Number of large read operations=0
+FILE: Number of write operations=0
+HDFS: Number of bytes read=497
+HDFS: Number of bytes written=286585981
+HDFS: Number of read operations=16
+HDFS: Number of large read operations=0
+HDFS: Number of write operations=8
+Job Counters
+Launched map tasks=4
+Other local map tasks=4
+Total time spent by all maps in occupied slots (ms)=230162
+Total time spent by all reduces in occupied slots (ms)=0
+Total time spent by all map tasks (ms)=230162
+Total vcore-milliseconds taken by all map tasks=230162
+Total megabyte-milliseconds taken by all map tasks=235685888
+Map-Reduce Framework
+Map input records=12000000
+Map output records=12000000
+Input split bytes=497
+Spilled Records=0
+Failed Shuffles=0
+Merged Map outputs=0
+GC time elapsed (ms)=3250
+CPU time spent (ms)=165480
+Physical memory (bytes) snapshot=2122833920
+Virtual memory (bytes) snapshot=11325624320
+Total committed heap usage (bytes)=1522532352
+File Input Format Counters
+Bytes Read=0
+File Output Format Counters
+Bytes Written=0
+20/04/18 16:08:13 INFO mapreduce.ImportJobBase: Transferred 273.3097 MB in 165.0064 seconds (1.6564 MB/sec)
+20/04/18 16:08:13 INFO mapreduce.ImportJobBase: Retrieved 12000000 records.
+```
+
+</details>
+
+Посмотрим что в таблице `sales_large`.
+
+```
+select * from student3_7_les4.sales_large limit 3;
+```
+
+| sales_large.region    | sales_large.country            | sales_large.itemtype | sales_large.saleschannel | sales_large.orderpriority | sales_large.orderdate | sales_large.orderid | sales_large.shipdate | sales_large.unitssold | sales_large.unitprice | sales_large.unitcost | sales_large.totalrevenue | sales_large.totalcost | sales_large.totalprofit |
+| --------------------- | ------------------------------ | -------------------- | ------------------------ | ------------------------- | --------------------- | ------------------- | -------------------- | --------------------- | --------------------- | -------------------- | ------------------------ | --------------------- | ----------------------- |
+| Sub-Saharan Africa    | Guinea-Bissau                  | Clothes              | Online                   | H                         | 11/11/2013            | 212896001           | 12/8/2013            | 9513                  | 109                   | 35                   | 1039580                  | 340945                | 698634                  |
+| Australia and Oceania | Federated States of Micronesia | Meat                 | Offline                  | H                         | 7/9/2013              | 211781489           | 8/1/2013             | 9704                  | 421                   | 364                  | 4094020                  | 3538951               | 555068                  |
+| Sub-Saharan Africa    | Niger                          | Snacks               | Offline                  | H                         | 3/2/2013              | 313076293           | 3/12/2013            | 5087                  | 152                   | 97                   | 776174                   | 495677                | 280497                  |
 
 **4. Найдите папки на файловой системе куда были сохранены данные. Посмотрите их размер.**
 
+```
+[student3_7@manager ~]$ hdfs dfs -du -h -s /user/student3_7/shakespeare/paragraph
+8.4 M  25.3 M  /user/student3_7/shakespeare/paragraph
+```
+
+```
+[student3_7@manager ~]$ hdfs dfs -du -h -s /user/student3_7/shakespeare/work
+10.3 K  31.0 K  /user/student3_7/shakespeare/work
+```
+
+```
+[student3_7@manager ~]$ hdfs dfs -du -h -s /user/student3_7/shakespeare/sales_large
+273.3 M  819.9 M  /user/student3_7/shakespeare/sales_large
+```
+
 **5. Сделайте несколько произвольных запросов к этим таблицам.**
+
+```
+select p.workid, w.title, p.row_count, p.charcount_sum, p.wordcount_sum
+from  (
+    select
+        workid,
+        count(*) as row_count,
+        sum(charcount) as charcount_sum,
+        sum(wordcount) as wordcount_sum
+    from student3_7_les4.paragraph
+    group by workid
+) p
+left join (
+    select distinct(workid) as workid, title from student3_7_les4.work
+) w
+on w.workid = p.workid limit 10;
+```
+
+| p.workid     | w.title                   | p.row_count | p.charcount_sum | p.wordcount_sum |
+| ------------ | ------------------------- | ----------- | --------------- | --------------- |
+| 12night      | Twelfth Night             | 1031        | 108261          | 19837           |
+| allswell     | All's Well That Ends Well | 1025        | 127498          | 22997           |
+| antonycleo   | Antony and Cleopatra      | 1344        | 143138          | 24905           |
+| asyoulikeit  | As You Like It            | 872         | 120596          | 21690           |
+| comedyerrors | Comedy of Errors          | 661         | 80199           | 14692           |
+| coriolanus   | Coriolanus                | 1226        | 157364          | 27577           |
+| cymbeline    | Cymbeline                 | 971         | 157119          | 27565           |
+| hamlet       | Hamlet                    | 1275        | 175446          | 30558           |
+| henry4p1     | Henry IV, Part I          | 884         | 137447          | 24579           |
+| henry4p2     | Henry IV, Part II         | 1013        | 144682          | 25692           |
+
+```
+select
+    country,
+    count(orderid) as count_order,
+    sum(totalrevenue) as totalrevenue,
+    sum(totalcost) as totalcost,
+    sum(totalprofit) as totalprofit
+from student3_7_les4.sales_large
+group by country
+order by totalprofit desc
+limit 10;
+```
+
+| country     | count_order | totalrevenue | totalcost   | totalprofit |
+| ----------- | ----------- | ------------ | ----------- | ----------- |
+| Syria       | 66216       | 88671182200  | 62517124728 | 26154025680 |
+| New Zealand | 66208       | 87809906520  | 61704820320 | 26105054384 |
+| Italy       | 65392       | 87992295120  | 61922947328 | 26069316248 |
+| Egypt       | 66104       | 87924095352  | 61876075408 | 26047987672 |
+| Chad        | 65400       | 88205609888  | 62170572256 | 26035006048 |
+| Malaysia    | 65656       | 87517283200  | 61484877800 | 26032373672 |
+| Brunei      | 65736       | 88093966200  | 62069351904 | 26024582120 |
+| San Marino  | 65312       | 88082729760  | 62061880752 | 26020817200 |
+| Ukraine     | 65528       | 87690529592  | 61678914064 | 26011583784 |
+| Guatemala   | 65544       | 87777960464  | 61798151368 | 25979777416 |
 
 **6. [Продвинутое задание] Сделать тоже самое с любой другой таблицей в любой другой БД вне кластера. Это задание автматически покрывает предыдущие пять пунктов -- если сделаете, то пункты 1-5 не обязательны :)**
 
-Пример запуска SQOOP
-Импорт:
+Не сделано
+
+<details>
+<summary>Пример запуска SQOOP</summary>
+
+```
 sqoop import --connect jdbc:postgresql://node3.novalocal/pg_db --username exporter -P --table character --hive-import --hive-database default --hive-table character
-Посмотреть в схему:
-sqoop import --connect jdbc:postgresql://node3.novalocal/pg_db --username exporter -P --table character --hive-import --hive-database default --hive-table character
+```
+
+</details>
