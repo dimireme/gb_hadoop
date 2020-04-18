@@ -427,17 +427,18 @@ charcount:      INT32 SNAPPY DO:0 FPO:1999221 SZ:14247/14240/1.00 VC:8866 ENC:RL
 wordcount:      INT32 SNAPPY DO:0 FPO:2013468 SZ:9899/9890/1.00 VC:8866 ENC:RLE,BIT_PACKED,PLAIN_DICTIONARY
 ```
 
+</details>
+
 Проверим содержимое таблицы:
 
 ```
 select * from student3_7_les4.paragraph limit 3;
 ```
 
-| paragraph.workid                          | paragraph.paragraphid                                  | paragraph.paragraphnum | paragraph.charid | paragraph.plaintext                                              | paragraph.phonetictext | paragraph.stemtext | paragraph.paragraphtype | paragraph.section | paragraph.chapter | paragraph.charcount | paragraph.wordcount |
-| ----------------------------------------- | ------------------------------------------------------ | ---------------------- | ---------------- | ---------------------------------------------------------------- | ---------------------- | ------------------ | ----------------------- | ----------------- | ----------------- | ------------------- | ------------------- |
-| 12night                                   | 630863                                                 | 3                      | xxx              | [Enter DUKE ORSINO, CURIO, and other Lords; Musicians attending] |
-| ENTR TK ORSN KR ANT O0R LRTS MSXNS ATNTNK | enter duke orsino curio and other lord musician attend | b                      | 1                | 1                                                                | 65                     | 9                  |
-| 12night                                   | 630864                                                 | 4                      | ORSINO           | If music be the food of love, play on;                           |
+| paragraph.workid | paragraph.paragraphid | paragraph.paragraphnum | paragraph.charid | paragraph.plaintext                                              | paragraph.phonetictext                    | paragraph.stemtext                                     | paragraph.paragraphtype | paragraph.section | paragraph.chapter | paragraph.charcount | paragraph.wordcount |
+| ---------------- | --------------------- | ---------------------- | ---------------- | ---------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------ | ----------------------- | ----------------- | ----------------- | ------------------- | ------------------- |
+| 12night          | 630863                | 3                      | xxx              | [Enter DUKE ORSINO, CURIO, and other Lords; Musicians attending] | ENTR TK ORSN KR ANT O0R LRTS MSXNS ATNTNK | enter duke orsino curio and other lord musician attend | b                       | 1                 | 1                 | 65                  | 9                   |
+| 12night          | 630864                | 4                      | ORSINO           | If music be the food of love, play on;                           |
 
 \[p]Give me excess of it, that, surfeiting,
 \[p]The appetite may sicken, and so die.
