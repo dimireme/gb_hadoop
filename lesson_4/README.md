@@ -386,6 +386,13 @@ drwxr-xr-x   - student3_7 student3_7          0 2020-04-18 13:20 /user/student3_
 
 ```
 [student3_7@manager ~]$ parquet-tools meta hdfs://manager.novalocal:8020/user/student3_7/shakespeare/paragraph/5b0c51dc-4a1e-4c30-b349-d4b5e11b8313.parquet
+```
+
+<details>
+
+<summary>Результат</summary>
+
+```
 creator:       parquet-mr version 1.5.0-cdh5.16.2 (build ${buildNumber})
 extra:         parquet.avro.schema = {"type":"record","name":"paragraph","fields":[{"name":"workid","type":["null","string"],"doc":"Converted from 'string'","default":nul [more]...
 
@@ -432,20 +439,20 @@ select * from student3_7_les4.paragraph limit 3;
 | ENTR TK ORSN KR ANT O0R LRTS MSXNS ATNTNK | enter duke orsino curio and other lord musician attend | b                      | 1                | 1                                                                | 65                     | 9                  |
 | 12night                                   | 630864                                                 | 4                      | ORSINO           | If music be the food of love, play on;                           |
 
-[p]Give me excess of it, that, surfeiting,
-[p]The appetite may sicken, and so die.
-[p]That strain again! it had a dying fall:
-[p]O, it came o'er my ear like the sweet sound,
-[p]That breathes upon a bank of violets,
-[p]Stealing and giving odour! Enough; no more:
-[p]'Tis not so sweet now as it was before.
-[p]O spirit of love! how quick and fresh art thou,
-[p]That, notwithstanding thy capacity
-[p]Receiveth as the sea, nought enters there,
-[p]Of what validity and pitch soe'er,
-[p]But falls into abatement and low price,
-[p]Even in a minute: so full of shapes is fancy
-[p]That it alone is high fantastical.
+\[p]Give me excess of it, that, surfeiting,
+\[p]The appetite may sicken, and so die.
+\[p]That strain again! it had a dying fall:
+\[p]O, it came o'er my ear like the sweet sound,
+\[p]That breathes upon a bank of violets,
+\[p]Stealing and giving odour! Enough; no more:
+\[p]'Tis not so sweet now as it was before.
+\[p]O spirit of love! how quick and fresh art thou,
+\[p]That, notwithstanding thy capacity
+\[p]Receiveth as the sea, nought enters there,
+\[p]Of what validity and pitch soe'er,
+\[p]But falls into abatement and low price,
+\[p]Even in a minute: so full of shapes is fancy
+\[p]That it alone is high fantastical.
 |IF MSK B 0 FT OF LF PL ON JF M EKSSS OF IT 0T SRFTNK 0 APTT M SKN ANT S T 0T STRN AKN IT HT A TYNK FL O IT KM OR M ER LK 0 SWT SNT 0T BR0S UPN A BNK OF FLTS STLNK ANT JFNK OTR ENF N MR TS NT S SWT N AS IT WS BFR O SPRT OF LF H KK ANT FRX ART 0 0T NTW0STNTNK 0 KPST RSF0 AS 0 S NFT ENTRS 0R OF HT FLTT ANT PTX SR BT FLS INT ABTMNT ANT L PRS EFN IN A MNT S FL OF XPS IS FNS 0T IT ALN IS HF FNTSTKL |if music be the food of love plai on give me excess of it that surfeit the appetit mai sicken and so die that strain again it had a dy fall o it came oer my ear like the sweet sound that breath upon a bank of violet steal and give odour enough no more ti not so sweet now a it wa befor o spirit of love how quick and fresh art thou that notwithstand thy capac receiveth a the sea nought enter there of what valid and pitch soeer but fall into abat and low price even in a minut so full of shape i fanci that it alon i high fantast |b |1 |1 |646 |114|
 |12night |630865 |19 |CURIO |Will you go hunt, my lord?
 |WL Y K HNT M LRT |will you go hunt my lord |b |1| 1| 27| 6|
