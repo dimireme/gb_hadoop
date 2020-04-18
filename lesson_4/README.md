@@ -367,6 +367,8 @@ Note: Recompile with -Xlint:deprecation for details.
 20/04/18 12:31:25 INFO mapreduce.ImportJobBase: Retrieved 35465 records.
 ```
 
+</details>
+
 То же самое, но таблица создаётся автоматически и данные помещаются в папку `/user/hive/warehouse/student3_7_les4.db/paragraph_2/`.
 
 Посмотрим на созданные файлы:
