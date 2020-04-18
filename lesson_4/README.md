@@ -192,7 +192,7 @@ select * from work limit 10;
 [student3_7@manager ~]$ sqoop import --connect jdbc:postgresql://node3.novalocal:5432/pg_db --username exporter -P --table work --target-dir /user/student3_7/shakespeare/work --as-avrodatafile
 ```
 
-При этом в теукущей локальной дирекутории создаётся файл `work.avsc`, содержащий схему таблицы. Скопируем её в HDFS.
+При этом в теукущей локальной директории создаётся файл `work.avsc`, содержащий схему таблицы. Скопируем её в HDFS.
 
 ```
 [student3_7@manager ~]$ hdfs dfs -copyFromLocal work.avsc /user/student3_7/shakespeare/
@@ -603,6 +603,8 @@ select * from student3_7_les4.sales_large limit 3;
 [student3_7@manager ~]$ hdfs dfs -du -h -s /user/student3_7/shakespeare/sales_large
 273.3 M  819.9 M  /user/student3_7/shakespeare/sales_large
 ```
+
+Какой объём занимала таблица `sales_large` в postgresql неизвестно, но в HDFS в формате OCR данные занимают 273.3 Мегабайта.
 
 **5. Сделайте несколько произвольных запросов к этим таблицам.**
 
