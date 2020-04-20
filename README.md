@@ -9,3 +9,5 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 [Урок 3. SQL движки PIG, HIVE, Impala.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_3)
 
 [Урок 4. Заливка данных в Hadoop. Форматы данных. SQOOP.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_4)
+
+[Урок 5. Потоковая обработка данных. Flume.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_5)
