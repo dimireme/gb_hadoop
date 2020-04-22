@@ -49,9 +49,10 @@ ETL-процесс формирует батч из 10 событий (кажд�
 `NetcatAgent.sinks.LoggerSink.hdfs.fileType=SequenceFile` - значение по-умолчанию, указывать не обязательно.
 
 **2. Создать любой Flume поток используя Flume сервис соотвествующего номера.**
-• Тип источника источник – exeс
-• Тип канала – file
-• Тип слива – hdfs
+
+Тип источника источник – exeс
+Тип канала – file
+Тип слива – hdfs
 
 Для сервиса Flume-7 зададим конфиг:
 
@@ -111,11 +112,9 @@ SEQ!org.apache.hadoop.io.LongWritable"org.apache.hadoop.io.BytesWritable���
                                                                                                                                               zX�#"9�E[
 ```
 
-TODO: same with `/var/log/hadoop-hdfs/hadoop-cmf-hdfs-DATANODE-node2.novalocal.log.out`
-
 **3. [Продвинутый вариант] Сделать то-же самое используя несколько сливов в разные места, например в HDFS и в Hive одновременно.**
 
-Задаём два канала на два слива с одним источником. По умолчанию параметр `LoggerAgent.sources.ExecSource.selector.type` == `replicating`. В этом случае событие будет отправлено на все указанные каналы. При значении `multiplexing`, событие будет отправлено только в подходящие каналы. Условие выбора канала задаётся дополнительными параметрами.
+Задаём два канала на два слива с одним источником. По умолчанию параметр `LoggerAgent.sources.ExecSource.selector.type == replicating`. В этом случае событие будет отправлено на все указанные каналы. При значении `multiplexing`, событие будет отправлено только в подходящие каналы. Условие выбора канала задаётся дополнительными параметрами.
 
 ```
 # Naming the components on the current agent
@@ -128,7 +127,6 @@ LoggerAgent.sinks = HdfsSink HiveSink
 # Describing/Configuring the source
 LoggerAgent.sources.ExecSource.type = exec
 LoggerAgent.sources.ExecSource.command = tail -F /var/log/hadoop-httpfs/hadoop-cmf-hdfs-HTTPFS-node2.novalocal.log.out
-# LoggerAgent.sources.ExecSource.command = echo -e 77,some text
 LoggerAgent.sources.ExecSource.interceptors = TimestampInterceptor
 LoggerAgent.sources.ExecSource.interceptors.TimestampInterceptor.type = timestamp
 
@@ -229,4 +227,4 @@ SEQ!org.apache.hadoop.io.LongWritable"org.apache.hadoop.io.BytesWritable
 
 **4. [Продвинутый вариант] Повторить стандартный пример с выборкой сообщений из Twitter. Перед этим связаться со мной :)**
 
-tail -F /var/log/hadoop-httpfs/hadoop-cmf-hdfs-HTTPFS-node2.novalocal.log.out
+Не сделано.
