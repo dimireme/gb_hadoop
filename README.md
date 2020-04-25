@@ -11,3 +11,5 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 [Урок 4. Заливка данных в Hadoop. Форматы данных. SQOOP.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_4)
 
 [Урок 5. Потоковая обработка данных. Flume.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_5)
+
+[Урок 6. NoSQL в Hadoop. Hbase, Cassandra.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_6)
