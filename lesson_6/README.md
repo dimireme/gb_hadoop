@@ -17,6 +17,11 @@ hbase(main):004:0> create 'Student3_7', 'Message'
 0 row(s) in 3.0720 seconds
 
 => Hbase::Table - Student3_7
+```
+
+Посмотрим структуру табилцы:
+
+```
 hbase(main):005:0> describe 'Student3_7'
 Table Student3_7 is ENABLED
 Student3_7
@@ -75,16 +80,21 @@ third 5 message
 ```
 hbase(main):009:0> scan 'Student3_7'
 ROW                                             COLUMN+CELL
- default0c1c21cb-f918-4775-8c6b-f680f07cc3cb    column=Message:pCol, timestamp=1587979602590, value=first message
- default0ecfee8d-b2ae-4f61-a8d0-d7cac33a793e    column=Message:pCol, timestamp=1587979876628, value=third 5 message
- default1da55f6e-4f7b-4822-b812-66c8305629df    column=Message:pCol, timestamp=1587979871850, value=third 4 message
- default9e4f8ab4-0682-4e48-a3c4-149b6c28ef50    column=Message:pCol, timestamp=1587979707660, value=second message
- defaultdf3fe310-f8a1-4cae-b572-edf5b3e13bc1    column=Message:pCol, timestamp=1587979740680, value=third message
- incRow                                         column=Message:iCol, timestamp=1587979876635, value=\x00\x00\x00\x00\x00\x00\x00\x05
+  default387d8b32-3763-4572-b2b1-6c05c971f1b6   column=Message:pCol, timestamp=1588197514035, value=third message
+  defaulta086eefc-59b7-464c-8074-9a8fcdec3d17   column=Message:pCol, timestamp=1588197528058, value=third 5 message  defaultef7973a7-f224-4367-96ee-846f96c7c92a   column=Message:pCol, timestamp=1588197521048, value=third 4 message   defaultf2bf7349-56a0-4c1f-a19a-2b8f9ad0eaeb   column=Message:pCol, timestamp=1588197495050, value=second message
+  defaultf7c3d7ea-5e56-47fa-aa1d-803d99f18429   column=Message:pCol, timestamp=1588197487107, value=first message
+  incRow                                        column=Message:iCol, timestamp=1588197528062, value=\x00\x00\x00\x00\x00\x00\x00\x05
 6 row(s) in 0.0750 seconds
 ```
 
-// TODO: добавить пример чтения из ячейки
+Посмотрим значения по конкретному ключу:
+
+```
+hbase(main):015:0> get 'Student3_7', 'defaultf2bf7349-56a0-4c1f-a19a-2b8f9ad0eaeb'
+COLUMN                                      CELL
+ Message:pCol                               timestamp=1588197495050, value=second message
+1 row(s) in 0.0070 seconds
+```
 
 В конце удалим нашу таблицу. Сперва её нужно задизейблить, только потом можно будет её удалить.
 
