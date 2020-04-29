@@ -59,7 +59,7 @@ LoggerAgent.sources.ExecSource.channels = MemChannel
 LoggerAgent.sinks.HbaseSink.channel = MemChannel
 ```
 
-Агент Flume7 читает данные из файла `/tmp/student3_7_hbase_source` и записывает в таблицу `Student3_7`. Долбавим записей в файл-источник.
+Агент Flume7 читает данные из файла `/tmp/student3_7_hbase_source` и записывает в таблицу `Student3_7`. Добавим записей в файл-источник.
 
 ```
 [student3_7@node2 ~]$ echo 'first message' >> /tmp/student3_7_hbase_source
@@ -81,7 +81,9 @@ third 5 message
 hbase(main):009:0> scan 'Student3_7'
 ROW                                             COLUMN+CELL
   default387d8b32-3763-4572-b2b1-6c05c971f1b6   column=Message:pCol, timestamp=1588197514035, value=third message
-  defaulta086eefc-59b7-464c-8074-9a8fcdec3d17   column=Message:pCol, timestamp=1588197528058, value=third 5 message  defaultef7973a7-f224-4367-96ee-846f96c7c92a   column=Message:pCol, timestamp=1588197521048, value=third 4 message   defaultf2bf7349-56a0-4c1f-a19a-2b8f9ad0eaeb   column=Message:pCol, timestamp=1588197495050, value=second message
+  defaulta086eefc-59b7-464c-8074-9a8fcdec3d17   column=Message:pCol, timestamp=1588197528058, value=third 5 message
+  defaultef7973a7-f224-4367-96ee-846f96c7c92a   column=Message:pCol, timestamp=1588197521048, value=third 4 message
+  defaultf2bf7349-56a0-4c1f-a19a-2b8f9ad0eaeb   column=Message:pCol, timestamp=1588197495050, value=second message
   defaultf7c3d7ea-5e56-47fa-aa1d-803d99f18429   column=Message:pCol, timestamp=1588197487107, value=first message
   incRow                                        column=Message:iCol, timestamp=1588197528062, value=\x00\x00\x00\x00\x00\x00\x00\x05
 6 row(s) in 0.0750 seconds
