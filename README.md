@@ -13,3 +13,5 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 [Урок 5. Потоковая обработка данных. Flume.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_5)
 
 [Урок 6. NoSQL в Hadoop. Hbase, Cassandra.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_6)
+
+[Урок 7. Notebooks. Hue, Jupyter, Zeppelin.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_7)
