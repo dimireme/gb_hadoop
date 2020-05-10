@@ -14,4 +14,6 @@ Homework at course "BigData Hadoop" at Geekbrains university.
 
 [Урок 6. NoSQL в Hadoop. Hbase, Cassandra.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_6)
 
-[Урок 7. Notebooks. Hue, Jupyter, Zeppelin.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_7)
+[Урок 7. Notebooks. Hue, Jupyter, Zeppelin. Подключение к HBASE из ноубука Jupyter.](https://github.com/dimireme/gb_hadoop/blob/master/lesson_7/lesson_7.ipynb)
+
+[Урок 8. Подключение к HDFS и PostgreSQL из ноутбука Jupyter.](https://github.com/dimireme/gb_hadoop/tree/master/lesson_8/lesson_8.ipynb)
